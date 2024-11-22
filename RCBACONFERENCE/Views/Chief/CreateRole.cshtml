@@ -1,0 +1,59 @@
+﻿@model RCBACONFERENCE.Models.RoleViewModel
+@{
+    ViewData["Title"] = "Create Role";
+}
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Create Role</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-controller="Chief" asp-action="CreateRole" method="post" class="p-4 border rounded bg-light">
+        <div class="form-group">
+            <label asp-for="RoleName" class="form-label">Role Name</label>
+            <input asp-for="RoleName" class="form-control" required />
+            <span asp-validation-for="RoleName" class="text-danger"></span>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success btn-lg">Create Role</button>
+        </div>
+    </form>
+
+    <h3 class="text-center text-primary mt-5">Existing Roles</h3>
+    @if (Model.Roles != null && Model.Roles.Any())
+    {
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Role ID</th>
+                    <th>Role Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in Model.Roles)
+                {
+                    <tr>
+                        <td>@role.RoleId</td>
+                        <td>@role.RoleName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-center">No roles have been created yet.</p>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

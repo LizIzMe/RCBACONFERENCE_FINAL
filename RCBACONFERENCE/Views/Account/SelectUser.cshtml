@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Select User Role";
+}
+
+<div class="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-3xl">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome to RCBA Conference</h1>
+            <p class="text-gray-600 text-lg">Please select your role to continue</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <!-- Researcher Card -->
+            <div class="group">
+                <a href="@Url.Action("HomeResearcher", "Researcher")"
+                   class="block p-6 bg-white border-2 border-purple-200 rounded-lg hover:border-purple-500 transition-all duration-300 group-hover:shadow-lg">
+                    <div class="text-center">
+                        <div class="mb-4 inline-block p-3 bg-purple-100 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Researcher</h2>
+                        <p class="text-gray-600">Access your research dashboard and manage your paper submissions</p>
+                        <div class="mt-6">
+                            <span class="inline-block px-4 py-2 bg-purple-600 text-white rounded-full font-medium group-hover:bg-purple-700 transition-colors duration-300">
+                                Enter as Researcher
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Evaluator Card -->
+            <div class="group">
+                <a href="@Url.Action("HomeEvaluator", "Evaluator")"
+                   class="block p-6 bg-white border-2 border-green-200 rounded-lg hover:border-green-500 transition-all duration-300 group-hover:shadow-lg">
+                    <div class="text-center">
+                        <div class="mb-4 inline-block p-3 bg-green-100 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Evaluator</h2>
+                        <p class="text-gray-600">Review and evaluate submitted papers for the conference</p>
+                        <div class="mt-6">
+                            <span class="inline-block px-4 py-2 bg-green-600 text-white rounded-full font-medium group-hover:bg-green-700 transition-colors duration-300">
+                                Enter as Evaluator
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center">
+            <p class="text-sm text-gray-500">
+                Please select the role that matches your assigned permissions.
+                Contact the administrator if you have any issues accessing your role.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+    </style>
+}

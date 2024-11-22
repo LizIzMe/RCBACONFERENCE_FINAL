@@ -1,0 +1,81 @@
+﻿@model RCBACONFERENCE.Models.LoginViewModel
+@{
+    Layout = "_LayoutGeneral";
+}
+@if (TempData["ErrorMessage"] != null)
+
+{
+    <div class="alert alert-danger text-center">
+        @TempData["ErrorMessage"]
+    </div>
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="billboard" class="position-relative d-flex align-items-center py-1 bg-light-gray"
+         style="background-image: url(/images/banner-image-bg.png); background-size: cover; background-repeat: no-repeat; background-position: center;">
+
+        <div class="container d-flex align-items-center" style="background-color: rgba(17, 17, 17, 0.021); padding: 40px;border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;max-width: 1200px; font-family: 'Montserrat', sans-serif;">
+
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 style=" margin-bottom: 30px; color: #8b0000;font-size: 28px;">Login your account.</h1>
+
+                    <form asp-action="Login" method="post" class="p-4 border rounded bg-light">
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label asp-for="Email" class="form-label" style="display: block;font-weight: bold; margin-bottom: 10px;">Email</label>
+                            <input asp-for="Email" class="form-control" required style="width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 15px;">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label asp-for="Password" class="form-label" style="display: block; font-weight: bold; margin-bottom: 5px;">Password</label>
+                            <input asp-for="Password" class="form-control" type="password" required style=" width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 15px;">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn" style="display: block; width: 100%; padding: 10px; background-color: #8b0000; color: white; border: none; border-radius: 15px;cursor: pointer; font-size: 16px;">Login</button>
+                    </form>
+
+                    <form asp-action="ForgotPassword" method="get">
+                        <button type="submit" class="text-center" style="color: #8b0000;text-decoration: none; border:none; background-color:transparent;text-align: center;margin-top: 20px;">Forgot Password?</button>
+                    </form>
+
+                    <p style="text-align: center;margin-top: 20px;">Don't have an account? <a href="/Account/Register" style="color: #8b0000;text-decoration: none;">Register here.</a></p>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="image-container" style="display: flex;justify-content: center;">
+                        <img src="/images/pylon.png" alt="Image" style="max-width: 100%;height: auto;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="js/jquery-1.11.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Chief Dashboard";
+}
+
+<link rel="stylesheet" href="~/css/chief-dashboard.css" />
+
+<div class="dashboard-container">
+    <div class="dashboard-card">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Welcome to RCBA Conference</h1>
+            <div class="admin-badge">
+                Chief Administrator
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <p class="dashboard-description">
+                As the Chief Administrator, you have access to manage and oversee all conference activities.
+                Please use the navigation menu to access your administrative functions.
+            </p>
+
+            <div class="dashboard-grid">
+
+                <!-- Manage Conference Events -->
+                <a asp-controller="Chief" asp-action="ManageConferenceEvents" class="dashboard-card-link">
+                    <h3 class="card-title">Manage Conference Events</h3>
+                    <p class="card-description">Create & Edit Conference Event</p>
+                </a>
+
+                <!-- Invite Researchers to Become Evaluators -->
+                <a asp-controller="Chief" asp-action="ViewInvitedEvaluators" class="dashboard-card-link">
+                    <h3 class="card-title">Invite Researchers</h3>
+                    <p class="card-description">Invite researchers to become evaluators.</p>
+                </a>
+
+                <!-- Check Receipts -->
+                <a asp-controller="Chief" asp-action="CheckReceipts" class="dashboard-card-link">
+                    <h3 class="card-title">Check Receipts</h3>
+                    <p class="card-description">Review submitted receipts for registration.</p>
+                </a>
+
+                <!-- Generate Report -->
+                <a asp-controller="Chief" asp-action="GenerateReport" class="dashboard-card-link">
+                    <h3 class="card-title">Generate Report</h3>
+                    <p class="card-description">Generate and view conference reports.</p>
+                </a>
+
+                <!-- Account Settings -->
+                <a asp-controller="Account" asp-action="ProfileSettings" class="dashboard-card-link middle-card">
+                    <h3 class="card-title">Account Settings</h3>
+                    <p class="card-description">View and update your account settings.</p>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>

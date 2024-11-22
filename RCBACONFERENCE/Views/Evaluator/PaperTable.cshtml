@@ -1,0 +1,108 @@
+﻿@model IEnumerable<RCBACONFERENCE.Models.UploadPaperInfo>
+
+@{
+    ViewData["Title"] = "Assigned Papers";
+    Layout = "_LayoutEvaluator";
+}
+
+@*<div class="container mt-4">
+    <h2>Assigned Papers for Evaluation</h2>
+
+    @if (TempData["DebugInfo"] != null)
+    {
+        <div class="alert alert-info">
+            @TempData["DebugInfo"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["WarningMessage"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["WarningMessage"]
+        </div>
+    }*@
+<body style="font-family: 'Montserrat', sans-serif; overflow-y: auto;">
+    <div id="billboard" class="position-relative d-flex align-items-center py-1 bg-light-gray"
+         style="background-image: url(/images/banner-image-bg.png); background-size: cover; background-repeat: no-repeat; background-position: center;">
+        <div class="container mt-5">
+            <h2 class="text-center fw-bold text mb-4">Your Uploaded Papers</h2>
+            <div class="row">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Abstract</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var paper in Model)
+                                {
+                                    <tr>
+                                        <td>@paper.Title</td>
+                                        <td>@paper.Author</td>
+                                        <td>@(paper.Abstract?.Length > 100 ? paper.Abstract.Substring(0, 97) + "..." : paper.Abstract)</td>
+                                        <td>@if(paper.Status == "Pending")
+                                            {
+                                                <span class="badge badge-pending">Pending</span>
+                                            }
+                                            else if (paper.Status == "Active")
+                                            {
+                                                <span class="badge badge-active">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-rejected">Rejected</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (paper.Status == "Pending")
+
+                                            {
+
+                                                <a asp-action="ViewDocument" asp-controller="Researcher"
+                                                asp-route-id="@paper.UploadPaperID" class="btn btn-primary btn-sm">
+                                                    View Paper
+                                                </a>
+                                                <a asp-action="EvaluatePaper" asp-route-id="@paper.UploadPaperID"
+                                                class="btn btn-success btn-sm">
+                                                    Evaluate
+                                                </a>
+
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="ViewDocument" asp-controller="Researcher"
+                                                   asp-route-id="@paper.UploadPaperID" class="btn btn-primary btn-sm">
+                                                    View Paper
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        No papers are currently assigned to you for evaluation.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>

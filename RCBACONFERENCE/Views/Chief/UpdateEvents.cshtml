@@ -1,0 +1,160 @@
+﻿@model IEnumerable<RCBACONFERENCE.Models.ViewConferenceViewModel>
+
+@{
+    ViewData["Title"] = "Update Events";
+}
+
+<style>
+    .card-img-top {
+        height: 350px; /* Set a fixed height */
+        width: 100%; /* Ensure it spans the full width of the card */
+        object-fit: cover; /* Crop the image while maintaining its aspect ratio */
+        object-position: center; /* Center the cropped part of the image */
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">List of Events</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!--Event Thumbnail-->
+    <div class="row">
+        @foreach (var conference in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100">
+                    @if (conference.EventThumbnail != null)
+                    {
+                        <img class="card-img-top" src="data:image/png;base64,@Convert.ToBase64String(conference.EventThumbnail)" alt="@conference.EventName Thumbnail">
+                    }
+                    else
+                    {
+                        <img class="card-img-top" src="~/images/BG-Header.png" alt="Default Thumbnail">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@conference.EventName</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal-@conference.ResearchEventId">Edit Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="updateModal-@conference.ResearchEventId" tabindex="-1" aria-labelledby="updateModalLabel-@conference.ResearchEventId" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateModalLabel-@conference.ResearchEventId">Edit Event: @conference.EventName</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-action="UpdateEvent" asp-controller="Chief" method="post">
+                                <input type="hidden" name="ResearchEventId" value="@conference.ResearchEventId" />
+
+                                <div class="form-group mb-3">
+                                    <label for="EventDescription">Event Description</label>
+                                    <textarea class="form-control" id="EventDescription" readonly>@conference.EventDescription</textarea>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="EventLocation">Event Location</label>
+                                    <input type="text" class="form-control" id="EventLocation" value="@conference.EventLocation" readonly />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="RegistrationOpen">Registration Open</label>
+                                    <input type="datetime-local" class="form-control" name="RegistrationOpen" value="@conference.RegistrationOpen.ToString("yyyy-MM-ddTHH:mm")" required />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="RegistrationDeadline">Registration Deadline</label>
+                                    <input type="datetime-local" class="form-control" name="RegistrationDeadline" value="@conference.RegistrationDeadline.ToString("yyyy-MM-ddTHH:mm")" required />
+                                </div>
+
+                                <h5 class="mt-4">Schedule Events</h5>
+                                <div id="scheduleContainer-@conference.ResearchEventId">
+                                    @for (int i = 0; i < conference.Schedules.Count; i++)
+                                    {
+                                        <div class="border rounded p-3 mb-3">
+                                            <h6>Day @(@i + 1)</h6>
+                                            <div class="form-group mb-2">
+                                                <label>Event Date</label>
+                                                <input type="datetime-local" class="form-control" name="Schedules[@i].EventDate" value="@conference.Schedules[i].EventDate.ToString("yyyy-MM-ddTHH:mm")" required />
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label>End Time</label>
+                                                <input type="datetime-local" class="form-control" name="Schedules[@i].EndTime" value="@conference.Schedules[i].EndTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="text-end mt-4">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function lockEndTimeToEventDate(eventDateInput, endTimeInput) {
+            if (eventDateInput && endTimeInput) {
+                const eventDateValue = eventDateInput.value.split("T")[0]; 
+
+                const endTimeValueParts = endTimeInput.value.split("T");
+                if (endTimeValueParts.length === 2 && endTimeValueParts[0] !== eventDateValue) {
+                    endTimeInput.value = eventDateValue + 'T' + endTimeValueParts[1];
+                }
+
+                // Update constraints
+                const eventTime = eventDateInput.value.split("T")[1] || "00:00"; 
+                endTimeInput.setAttribute('min', eventDateValue + 'T' + eventTime); 
+                endTimeInput.setAttribute('max', eventDateValue + 'T23:59'); 
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const modals = document.querySelectorAll(".modal");
+            modals.forEach((modal) => {
+                modal.addEventListener("show.bs.modal", function () {
+                    const scheduleEvents = modal.querySelectorAll(".border.rounded");
+                    scheduleEvents.forEach((schedule, index) => {
+                        const eventDateInput = schedule.querySelector(`input[name="Schedules[${index}].EventDate"]`);
+                        const endTimeInput = schedule.querySelector(`input[name="Schedules[${index}].EndTime"]`);
+
+                        if (eventDateInput && endTimeInput) {
+                            lockEndTimeToEventDate(eventDateInput, endTimeInput);
+
+                            eventDateInput.addEventListener("input", function () {
+                                lockEndTimeToEventDate(eventDateInput, endTimeInput);
+                            });
+
+                            endTimeInput.addEventListener("input", function () {
+                                lockEndTimeToEventDate(eventDateInput, endTimeInput);
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,69 @@
+﻿@model RCBACONFERENCE.Models.VerifyViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Verify Your Account</h2>
+    <p class="text-center">A verification code has been sent to your email. Please enter it below to complete your registration.</p>
+
+    <!-- Display a summary of validation errors at the top -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["Message"]
+        </div>
+    }
+
+    <!-- Verification Code Form -->
+    <form asp-action="Verify" method="post" class="p-4 border rounded bg-light">
+        <input type="hidden" asp-for="Email" />
+
+        <div class="form-group">
+            <label asp-for="VerificationCode" class="form-label">Verification Code</label>
+            <input asp-for="VerificationCode" class="form-control" required />
+            <span asp-validation-for="VerificationCode" class="text-danger"></span>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Verify</button>
+        </div>
+    </form>
+
+    <!-- Resend Verification Code Button -->
+    <div class="text-center mt-3">
+        <form asp-action="ResendVerificationCodeForRegister" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="email" value="@Model.Email" />
+            <button type="submit" class="btn btn-secondary btn-sm">Resend Verification Code</button>
+        </form>
+    </div>
+
+    <!-- Change Email Form -->
+    <div class="text-center mt-3">
+        <p>If you entered the wrong email address during registration, you can change it here and we'll send a new verification code to the updated email.</p>
+        <form asp-action="ChangeEmail" method="post" class="mt-4 p-4 border rounded bg-light">
+            <input type="hidden" asp-for="Email" />
+
+            <div class="form-group">
+                <label asp-for="NewEmail" class="form-label">New Email</label>
+                <input asp-for="NewEmail" class="form-control" placeholder="Enter your new email address" />
+                <span asp-validation-for="NewEmail" class="text-danger"></span>
+            </div>
+
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-warning btn-sm">Change Email</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

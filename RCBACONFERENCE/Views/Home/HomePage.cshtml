@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+    <!-- DISPLAY ERROR/SUCCESS MESSAGE -->
+<div class="container text-center mt-5">
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="container text-center mt-5">
+        <h1 class="display-4 text-primary mb-4">Welcome to RCBA CONFERENCE</h1>
+        <p class="lead text-secondary">
+            Join us for an engaging experience! Get started by logging in or registering your account.
+        </p>
+
+        <div class="d-flex justify-content-center mt-4">
+            <a href="/Account/Login" class="btn btn-outline-primary btn-lg mx-2 px-5">
+                Login
+            </a>
+            <a href="/Account/Register" class="btn btn-outline-primary btn-lg mx-2 px-5">
+                Register
+            </a>
+        </div>
+    </div>
+</div>
