@@ -575,7 +575,7 @@ namespace RCBACONFERENCE.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("HomePage", "Home");
+            return RedirectToAction("WelcomePage", "Account");
         }
 
         [HttpGet]
