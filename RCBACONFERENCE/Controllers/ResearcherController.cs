@@ -39,6 +39,11 @@ namespace RCBACONFERENCE.Controllers
                 TempData["ErrorMessage"] = "You must be logged in to upload a paper.";
                 return RedirectToAction("Login", "Account");
             }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
 
             var researchEvents = _context.Registration
                 .Where(r => r.UserId == userId)
