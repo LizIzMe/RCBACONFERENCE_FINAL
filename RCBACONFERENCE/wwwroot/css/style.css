@@ -261,6 +261,11 @@ h6{
 /*--------------------------------------------------------------
 /** 3.1 Form Control
 --------------------------------------------------------------*/
+form {
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
 .form-control {
   padding: 1rem;
   font-size: 21px;
@@ -1446,3 +1451,4 @@ canvas {
 .status-btn { 
   background-color: #7e7e7e; color: white; border: none; padding: 5px 15px; border-radius: 8px; 
 }
+

@@ -1,0 +1,135 @@
+﻿@model RCBACONFERENCE.Models.ViewEthicsCertificateViewModel
+
+@{
+    ViewData["Title"] = "View Ethics Certificates";
+    Layout = "_LayoutResearcher";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center fw-bold mb-4" style="color:#850000;">Ethics Certificate Status</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model.StatusList.Any())
+    {
+        <div class="table-responsive shadow-sm rounded bg-white p-4">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th class="text-center">Ethics ID</th>
+                        <th class="text-center">Event Name</th>
+                        <th class="text-center">Research Title</th>
+                        <th class="text-center">Authors</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var status in Model.StatusList)
+                    {
+                        <tr>
+                            <td class="text-center">@status.EthicsID</td>
+                            <td class="text-center">@status.EventName</td>
+                            <td class="text-center">@status.ResearchTitle</td>
+                            <td class="text-center">
+                                <div>@status.Author</div>
+                                @if (!string.IsNullOrWhiteSpace(status.Authors))
+                                {
+                                    <div>@Html.Raw(status.Authors.Replace(",", "<br />"))</div>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <span class="badge @(status.Status == "Approved" ? "bg-success" : status.Status == "Pending" ? "bg-warning text-dark" : "bg-danger")">
+                                    @status.Status
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="ViewEthicsCertificate" asp-route-id="@status.EthicsID" class="btn btn-primary btn-sm" target="_blank">
+                                    View
+                                </a>
+                                @if (status.Status == "Rejected")
+                                {
+                                    <button class="btn btn-danger btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#resubmitModal-@status.EthicsID">
+                                        Resubmit
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Resubmit Modal -->
+                        <div class="modal fade" id="resubmitModal-@status.EthicsID" tabindex="-1" aria-labelledby="resubmitModalLabel-@status.EthicsID" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="resubmitModalLabel-@status.EthicsID">Resubmit Ethics Certificate</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form method="post" asp-action="ResubmitEthicsCertificate" enctype="multipart/form-data">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="EthicsID" value="@status.EthicsID" />
+
+                                            <!-- Event Name (Read-only) -->
+                                            <div class="mb-3">
+                                                <label for="EventName" class="form-label">Event Name</label>
+                                                <input type="text" class="form-control" value="@status.EventName" readonly />
+                                            </div>
+
+                                            <!-- Research Title -->
+                                            <div class="mb-3">
+                                                <label for="ResearchTitle" class="form-label">Research Title</label>
+                                                <input type="text" class="form-control" name="ResearchTitle" value="@status.ResearchTitle" required />
+                                            </div>
+
+                                            <!-- Co-Authors -->
+                                            <div class="mb-3">
+                                                <label for="Authors" class="form-label">Co-Authors</label>
+                                                <textarea class="form-control" name="Authors" placeholder="Add co-authors, separated by commas">@status.Authors</textarea>
+                                                <small class="form-text text-muted">Enter co-authors separated by commas (e.g., Jane Doe, John Smith).</small>
+                                            </div>
+
+                                            <!-- Chief's Comment (Read-only) -->
+                                            <div class="mb-3">
+                                                <label for="Comment" class="form-label">Chief's Comment</label>
+                                                <textarea class="form-control" readonly>@status.Comment</textarea>
+                                            </div>
+
+                                            <!-- Upload New Ethics Certificate -->
+                                            <div class="mb-3">
+                                                <label for="EthicsCertificate" class="form-label">Upload New Ethics Certificate (PDF only)</label>
+                                                <input type="file" class="form-control" name="EthicsCertificate" accept=".pdf" required />
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Resubmit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            No Ethics Certificates have been submitted yet.
+        </div>
+    }
+</div>

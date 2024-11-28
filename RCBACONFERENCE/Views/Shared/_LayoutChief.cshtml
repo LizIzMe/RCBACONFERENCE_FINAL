@@ -23,9 +23,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul id="navbar"
-                        class="navbar-nav text-uppercase justify-content-start justify-content-lg-center align-items-start align-items-lg-center flex-grow-1">
-
+                    <ul id="navbar" class="navbar-nav text-uppercase justify-content-start justify-content-lg-center align-items-start align-items-lg-center flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link me-4" asp-controller="Chief" asp-action="HomeChief">Home</a>
                         </li>
@@ -39,25 +37,27 @@
                             <a class="nav-link me-4" asp-controller="Chief" asp-action="CheckReceipts">Payments</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link me-4" asp-controller="Chief" asp-action="CheckEthics">Ethics</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link me-4" asp-controller="Chief" asp-action="GenerateReport">Reports</a>
                         </li>
-
-                        <li class="nav-item dropdown active">
-                            <a class="nav-link d-flex align-items-center me-4 dropdown-toggle active" data-bs-toggle="dropdown"
-                               href="#" role="button" aria-expanded="false">
+                        <!-- Profile Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle me-4" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
                                     <path fill="currentColor"
                                           d="M12 12q-1.65 0-2.825-1.175T8 8t1.175-2.825T12 4t2.825 1.175T16 8t-1.175 2.825T12 12m-8 8v-2.8q0-.85.438-1.562T5.6 14.55q1.55-.775 3.15-1.162T12 13t3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20z" />
                                 </svg>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end animate slide border">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                 <li>
                                     <a href="/Account/ProfileSettings" class="dropdown-item fw-light">Profile Settings</a>
                                 </li>
                                 <li>
-                                <form method="post" action="/Account/Logout" style="display: inline;">
-                                    <button type="submit" class="dropdown-item fw-light">Logout</button>
-                                </form>
+                                    <form method="post" action="/Account/Logout" style="display: inline;">
+                                        <button type="submit" class="dropdown-item fw-light">Logout</button>
+                                    </form>
                                 </li>
                             </ul>
                         </li>
@@ -66,19 +66,11 @@
             </div>
         </nav>
     </header>
+
     @RenderBody()
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
-    <script type="text/javascript" src="js/script.js"></script>
-    <!-- Bootstrap JavaScript Bundle with Popper -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-  
-

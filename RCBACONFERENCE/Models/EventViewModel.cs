@@ -12,7 +12,7 @@ namespace RCBACONFERENCE.Models
 
         [Required(ErrorMessage = "Event Location is required")]
         public string EventLocation { get; set; }
-
+        public bool RequiresEthicsCertificate { get; set; } 
         public byte[]? EventThumbnail { get; set; }
 
         [Required(ErrorMessage = "Registration Open date is required")]

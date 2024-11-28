@@ -26,6 +26,9 @@ namespace RCBACONFERENCE.Models
         [Required]
         public DateTime RegistrationDeadline { get; set; }
 
+        [Required]
+        public bool RequiresEthicsCertificate { get; set; } = false;
+
         public ICollection<ScheduleEvent> ScheduleEvents { get; set; } = new List<ScheduleEvent>();
 
         public void GenerateResearchEventId(int uniqueNumber)

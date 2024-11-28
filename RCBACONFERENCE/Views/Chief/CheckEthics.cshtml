@@ -1,12 +1,13 @@
-﻿@model CheckReceiptsViewModel
+﻿@model RCBACONFERENCE.Models.CheckEthicsViewModel
+
 @{
     Layout = "_LayoutChief";
 }
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold text-primary">Check Receipts</h1>
-        <form method="get" asp-action="CheckReceipts" id="filterForm" class="d-flex">
+        <h1 class="fw-bold text-primary">Check Ethics Certificates</h1>
+        <form method="get" asp-action="CheckEthics" id="filterForm" class="d-flex">
             <select id="researchEventId" name="researchEventId" class="form-select me-2" onchange="document.getElementById('filterForm').submit();">
                 <option value="">View All</option>
                 @foreach (var eventItem in Model.ResearchEvents)
@@ -36,47 +37,50 @@
         <table class="table table-hover align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th>User ID</th>
-                    <th>Research Event</th>
-                    <th>Name</th>
-                    <th>Classification</th>
-                    <th>Reference</th>
+                    <th>Ethics ID</th>
+                    <th>Research Title</th>
+                    <th>Authors</th>
+                    <th>Event Name</th>
                     <th>Status</th>
                     <th>Comment</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Receipts.Any())
+                @if (Model.EthicsCertificates.Any())
                 {
-                    @foreach (var receipt in Model.Receipts)
+                    @foreach (var certificate in Model.EthicsCertificates)
                     {
                         <tr class="align-middle">
-                            <form method="post" asp-action="UpdateReceiptStatus" asp-controller="Chief">
-                                <td class="fw-bold">@receipt.UserId</td>
-                                <td>@receipt.ResearchEventId</td>
-                                <td>@receipt.Name</td>
-                                <td>@receipt.Classification</td>
-                                <td>@receipt.ReferenceNumber</td>
+                            <form method="post" asp-action="UpdateEthicsStatus" asp-controller="Chief">
+                                <td class="fw-bold">@certificate.EthicsID</td>
+                                <td>@certificate.ResearchTitle</td>
                                 <td>
-                                    <select name="Status" class="form-select form-select-sm">
-                                        @Html.Raw($"<option value=\"Pending\" {(receipt.Status == "Pending" ? "selected" : "")}>Pending</option>")
-                                        @Html.Raw($"<option value=\"Approved\" {(receipt.Status == "Approved" ? "selected" : "")}>Approved</option>")
-                                        @Html.Raw($"<option value=\"Rejected\" {(receipt.Status == "Rejected" ? "selected" : "")}>Rejected</option>")
+                                    <div>@certificate.Author</div>
+                                    @if (!string.IsNullOrWhiteSpace(certificate.CoAuthors))
+                                    {
+                                        <div>@Html.Raw(certificate.CoAuthors.Replace(",", "<br />"))</div>
+                                    }
+                                </td>
+                                <td>@certificate.EventName</td>
+                                <td>
+                                    <select name="Status" class="form-select form-select-sm" @(certificate.Status == "Approved" ? "disabled" : "")>
+                                        @Html.Raw($"<option value=\"Pending\" {(certificate.Status == "Pending" ? "selected" : "")}>Pending</option>")
+                                        @Html.Raw($"<option value=\"Approved\" {(certificate.Status == "Approved" ? "selected" : "")}>Approved</option>")
+                                        @Html.Raw($"<option value=\"Rejected\" {(certificate.Status == "Rejected" ? "selected" : "")}>Rejected</option>")
                                     </select>
                                 </td>
                                 <td>
                                     <textarea name="Comment" class="form-control form-control-sm"
-                                        @(receipt.Status != "Rejected" ? "readonly" : "")>@receipt.Comment</textarea>
+                                        @(certificate.Status != "Rejected" ? "readonly" : "")>@certificate.Comment</textarea>
                                 </td>
                                 <td class="text-center">
-                                    <input type="hidden" name="UserId" value="@receipt.UserId" />
-                                    <input type="hidden" name="ResearchEventId" value="@receipt.ResearchEventId" />
-                                    <button type="submit" class="btn btn-primary btn-sm me-2">
+                                    <input type="hidden" name="EthicsID" value="@certificate.EthicsID" />
+                                    <button type="submit" class="btn btn-primary btn-sm me-2" @(certificate.Status == "Approved" ? "disabled" : "")>
                                         <i class="bi bi-save"></i> Update
                                     </button>
-                                    <a asp-action="ViewReceipt" asp-route-userId="@receipt.UserId" asp-route-researchEventId="@receipt.ResearchEventId" class="btn btn-info btn-sm">
-                                        <i class="bi bi-file-earmark-image"></i> View
+                                    <a asp-action="ViewEthicsCertificate" asp-route-id="@certificate.EthicsID" class="btn btn-info btn-sm" target="_blank">
+                                        <i class="bi bi-file-earmark-pdf"></i> View
                                     </a>
                                 </td>
                             </form>
@@ -86,7 +90,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="8" class="text-center text-muted">No receipts found.</td>
+                        <td colspan="7" class="text-center text-muted">No ethics certificates found.</td>
                     </tr>
                 }
             </tbody>
@@ -96,7 +100,7 @@
 
 @section Scripts {
     <script>
-                document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
             const statusDropdowns = document.querySelectorAll('select[name="Status"]');
             statusDropdowns.forEach(dropdown => {
                 dropdown.addEventListener('change', function () {
@@ -110,6 +114,5 @@
                 });
             });
         });
-
     </script>
 }

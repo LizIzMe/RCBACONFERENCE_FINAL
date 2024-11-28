@@ -84,6 +84,63 @@ namespace RCBACONFERENCE.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CONF_Receipt",
+                columns: table => new
+                {
+                    ReceiptId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ResearchEventId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReceiptFile = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    ReferenceNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UploadedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CONF_Receipt", x => x.ReceiptId);
+                    table.ForeignKey(
+                        name: "FK_CONF_Receipt_CONF_ResearchEvent_ResearchEventId",
+                        column: x => x.ResearchEventId,
+                        principalTable: "CONF_ResearchEvent",
+                        principalColumn: "ResearchEventId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CONF_Receipt_CONF_UserConference_UserId",
+                        column: x => x.UserId,
+                        principalTable: "CONF_UserConference",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CONF_Registration",
+                columns: table => new
+                {
+                    RegistrationId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ResearchEventId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CONF_Registration", x => x.RegistrationId);
+                    table.ForeignKey(
+                        name: "FK_CONF_Registration_CONF_ResearchEvent_ResearchEventId",
+                        column: x => x.ResearchEventId,
+                        principalTable: "CONF_ResearchEvent",
+                        principalColumn: "ResearchEventId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CONF_Registration_CONF_UserConference_UserId",
+                        column: x => x.UserId,
+                        principalTable: "CONF_UserConference",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CONF_UserConferenceRoles",
                 columns: table => new
                 {
@@ -134,6 +191,7 @@ namespace RCBACONFERENCE.Migrations
                     UploadPaperID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserRoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ResearchEventId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Abstract = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
@@ -149,17 +207,23 @@ namespace RCBACONFERENCE.Migrations
                 {
                     table.PrimaryKey("PK_CONF_UploadPapers", x => x.UploadPaperID);
                     table.ForeignKey(
+                        name: "FK_CONF_UploadPapers_CONF_ResearchEvent_ResearchEventId",
+                        column: x => x.ResearchEventId,
+                        principalTable: "CONF_ResearchEvent",
+                        principalColumn: "ResearchEventId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_CONF_UploadPapers_CONF_UserConferenceRoles_UserRoleId",
                         column: x => x.UserRoleId,
                         principalTable: "CONF_UserConferenceRoles",
                         principalColumn: "UserRoleId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CONF_UploadPapers_CONF_UserConference_UserId",
                         column: x => x.UserId,
                         principalTable: "CONF_UserConference",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,7 +234,13 @@ namespace RCBACONFERENCE.Migrations
                     UploadPaperID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     EvaluatorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Comments = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
+                    ScientificNovelty = table.Column<int>(type: "int", nullable: false),
+                    SignificanceContribution = table.Column<int>(type: "int", nullable: false),
+                    TechnicalQuality = table.Column<int>(type: "int", nullable: false),
+                    DepthResearch = table.Column<int>(type: "int", nullable: false),
+                    ClarityPresentation = table.Column<int>(type: "int", nullable: false),
+                    RelevanceTheme = table.Column<int>(type: "int", nullable: false),
+                    OriginalityApproach = table.Column<int>(type: "int", nullable: false),
                     EvaluatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -187,7 +257,7 @@ namespace RCBACONFERENCE.Migrations
                         column: x => x.UploadPaperID,
                         principalTable: "CONF_UploadPapers",
                         principalColumn: "UploadPaperID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -213,7 +283,7 @@ namespace RCBACONFERENCE.Migrations
                         column: x => x.UploadPaperID,
                         principalTable: "CONF_UploadPapers",
                         principalColumn: "UploadPaperID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -242,8 +312,33 @@ namespace RCBACONFERENCE.Migrations
                 column: "UploadPaperID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CONF_Receipt_ResearchEventId",
+                table: "CONF_Receipt",
+                column: "ResearchEventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CONF_Receipt_UserId",
+                table: "CONF_Receipt",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CONF_Registration_ResearchEventId",
+                table: "CONF_Registration",
+                column: "ResearchEventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CONF_Registration_UserId",
+                table: "CONF_Registration",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CONF_ScheduleEvent_ResearchEventId",
                 table: "CONF_ScheduleEvent",
+                column: "ResearchEventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CONF_UploadPapers_ResearchEventId",
+                table: "CONF_UploadPapers",
                 column: "ResearchEventId");
 
             migrationBuilder.CreateIndex(
@@ -275,6 +370,12 @@ namespace RCBACONFERENCE.Migrations
 
             migrationBuilder.DropTable(
                 name: "CONF_PaperAssignmentTable");
+
+            migrationBuilder.DropTable(
+                name: "CONF_Receipt");
+
+            migrationBuilder.DropTable(
+                name: "CONF_Registration");
 
             migrationBuilder.DropTable(
                 name: "CONF_ScheduleEvent");

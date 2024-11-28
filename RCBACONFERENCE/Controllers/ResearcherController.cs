@@ -6,11 +6,12 @@ using RCBACONFERENCE.Data;
 using RCBACONFERENCE.Models;
 using RCBACONFERENCE.Services;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace RCBACONFERENCE.Controllers
 {
     [Authorize] // Add authorization to ensure user is logged in
-    public class ResearcherController : Controller
+    public class ResearcherController : BaseController
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
@@ -20,7 +21,8 @@ namespace RCBACONFERENCE.Controllers
             ApplicationDbContext context,
             IWebHostEnvironment environment,
             ILogger<ResearcherController> logger,
-            AssignmentPaper assignmentPaper) // Injected service)
+            AssignmentPaper assignmentPaper)
+            : base(context) 
         {
             _context = context;
             _environment = environment;
@@ -32,17 +34,11 @@ namespace RCBACONFERENCE.Controllers
         [HttpGet]
         public IActionResult UploadPaper()
         {
-            // Get logged-in user ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
                 TempData["ErrorMessage"] = "You must be logged in to upload a paper.";
                 return RedirectToAction("Login", "Account");
-            }
-                else
-                {
-                    return Unauthorized();
-                }
             }
 
             var researchEvents = _context.Registration
@@ -54,10 +50,22 @@ namespace RCBACONFERENCE.Controllers
                 })
                 .ToList();
 
-            ViewBag.ResearchEvents = researchEvents;
+            var approvedEthics = _context.EthicsCertificate
+                .Where(ec => ec.UserId == userId && ec.Status == "Approved")
+                .Select(ec => new
+                {
+                    ec.EthicsID,
+                    ec.ResearchEventId,
+                    ec.ResearchTitle
+                })
+                .ToList();
 
-            return View();
+            ViewBag.ResearchEvents = researchEvents;
+            ViewBag.ApprovedEthics = approvedEthics;
+
+            return View(new UploadPaperInfo()); 
         }
+
 
         //Upload paper logic
         [HttpPost]
@@ -66,7 +74,6 @@ namespace RCBACONFERENCE.Controllers
         {
             try
             {
-                // Retrieve logged-in user information
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
@@ -74,7 +81,6 @@ namespace RCBACONFERENCE.Controllers
                     return RedirectToAction("Login", "Account");
                 }
 
-                // Verify user exists
                 var user = await _context.UsersConference.FirstOrDefaultAsync(u => u.UserId == userId);
                 if (user == null)
                 {
@@ -82,18 +88,48 @@ namespace RCBACONFERENCE.Controllers
                     return RedirectToAction("Login", "Account");
                 }
 
-                // Verify role exists
+                var researchEvent = await _context.ResearchEvent.FirstOrDefaultAsync(re => re.ResearchEventId == model.ResearchEventId);
+                if (researchEvent == null)
+                {
+                    TempData["Error"] = "Research event not found.";
+                    PopulateResearchEventsViewBag(userId);
+                    return View(model);
+                }
+
+                if (researchEvent.RequiresEthicsCertificate &&
+                    (user.Affiliation.Equals("Polytechnic University of the Philippines", StringComparison.OrdinalIgnoreCase) ||
+                     user.Affiliation.Equals("PUP", StringComparison.OrdinalIgnoreCase)))
+                {
+                    if (string.IsNullOrEmpty(model.EthicsID))
+                    {
+                        TempData["Error"] = "You must select an approved Ethics Certificate for this event.";
+                        PopulateResearchEventsViewBag(userId);
+                        return View(model);
+                    }
+
+                    var ethicsCertificate = await _context.EthicsCertificate
+                        .FirstOrDefaultAsync(ec => ec.EthicsID == model.EthicsID && ec.UserId == userId && ec.ResearchEventId == researchEvent.ResearchEventId);
+
+                    if (ethicsCertificate == null || ethicsCertificate.Status != "Approved")
+                    {
+                        TempData["Error"] = "The selected Ethics Certificate is invalid or not approved.";
+                        PopulateResearchEventsViewBag(userId);
+                        return View(model);
+                    }
+                }
+
                 var userRole = await _context.UserConferenceRoles.FirstOrDefaultAsync(r => r.UserId == userId);
                 if (userRole == null)
                 {
                     TempData["Error"] = "User role not found.";
+                    PopulateResearchEventsViewBag(userId);
                     return View(model);
                 }
 
-                // Validate file
                 if (file == null || file.Length == 0)
                 {
                     TempData["Error"] = "Please select a valid file.";
+                    PopulateResearchEventsViewBag(userId);
                     return View(model);
                 }
 
@@ -102,10 +138,10 @@ namespace RCBACONFERENCE.Controllers
                 if (!allowedExtensions.Contains(extension))
                 {
                     TempData["Error"] = "Only PDF files are allowed.";
+                    PopulateResearchEventsViewBag(userId);
                     return View(model);
                 }
 
-                // Read file data
                 byte[] fileData;
                 using (var memoryStream = new MemoryStream())
                 {
@@ -113,7 +149,6 @@ namespace RCBACONFERENCE.Controllers
                     fileData = memoryStream.ToArray();
                 }
 
-                // Prepare data for saving
                 var paperInfo = new UploadPaperInfo
                 {
                     UserId = userId,
@@ -122,22 +157,22 @@ namespace RCBACONFERENCE.Controllers
                     Title = model.Title,
                     Abstract = model.Abstract,
                     Author = $"{user.FirstName} {user.LastName}",
-                    Authors = Authors.Length > 0 ? string.Join(", ", Authors) : "Unknown Author", // Default value
-                    Affiliation = model.Affiliation,
+                    Authors = Authors.Length > 0 ? string.Join(", ", Authors) : "Unknown Author",
+                    Affiliation = user.Affiliation,
                     Keywords = model.Keywords,
                     FileData = fileData,
                     FileName = file.FileName,
                     FileType = file.ContentType,
-                    Status = "Pending" // Default status is Pending
+                    Status = "Pending",
+                    EthicsID = model.EthicsID,
+                    CreatedAt = DateTime.Now
                 };
 
-                // Save to database
                 _context.UploadPapers.Add(paperInfo);
                 await _context.SaveChangesAsync();
 
                 TempData["Success"] = "Paper uploaded successfully!";
 
-                // Assign the uploaded paper to evaluators
                 try
                 {
                     await _assignmentPaper.AssignPapersToEvaluators();
@@ -151,12 +186,51 @@ namespace RCBACONFERENCE.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while uploading the paper.");
                 TempData["Error"] = "An error occurred while uploading the paper. Please try again.";
+                PopulateResearchEventsViewBag(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 return View(model);
             }
         }
-    
-    public IActionResult HomeResearcher()
+
+        private void PopulateResearchEventsViewBag(string userId)
+        {
+            var researchEvents = _context.Registration
+                .Where(r => r.UserId == userId)
+                .Select(r => new
+                {
+                    ResearchEventId = r.ResearchEvent.ResearchEventId,
+                    DisplayText = $"{r.ResearchEvent.ResearchEventId} : {r.ResearchEvent.EventName}"
+                })
+                .ToList();
+
+            ViewBag.ResearchEvents = researchEvents;
+        }
+
+        [HttpGet]
+        public IActionResult GetApprovedEthics(string researchEventId)
+        {
+            if (string.IsNullOrEmpty(researchEventId))
+            {
+                _logger.LogWarning("ResearchEventId is null or empty.");
+                return Json(new { message = "Invalid Research Event ID." });
+            }
+
+            var approvedEthics = _context.EthicsCertificate
+                .Where(ec => ec.ResearchEventId == researchEventId && ec.Status == "Approved")
+                .Select(ec => new
+                {
+                    ec.EthicsID,
+                    ec.ResearchTitle
+                })
+                .ToList();
+
+            _logger.LogInformation("Approved Ethics for Event {EventId}: {Ethics}", researchEventId, approvedEthics);
+
+            return Json(approvedEthics);
+        }
+
+        public IActionResult HomeResearcher()
         {
             return View();
         }
@@ -165,6 +239,7 @@ namespace RCBACONFERENCE.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewDocument(string id)
         {
+
                 try
                 {
                     // Fetch the paper by its ID
@@ -321,7 +396,7 @@ namespace RCBACONFERENCE.Controllers
         [HttpGet]
         public IActionResult ViewConference()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();
@@ -340,6 +415,7 @@ namespace RCBACONFERENCE.Controllers
                 EventThumbnail = re.EventThumbnail,
                 RegistrationOpen = re.RegistrationOpen,
                 RegistrationDeadline = re.RegistrationDeadline,
+                RequiresEthicsCertificate = re.RequiresEthicsCertificate,
                 Schedules = re.ScheduleEvents.Select(se => new ScheduleEventViewModel
                 {
                     EventDate = se.EventDate,
@@ -478,6 +554,204 @@ namespace RCBACONFERENCE.Controllers
 
             TempData["SuccessMessage"] = "New receipt uploaded successfully!";
             return RedirectToAction("ViewConference");
+        }
+
+        [HttpGet]
+        public IActionResult SubmitEthicsCertificate()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["ErrorMessage"] = "You must be logged in to submit an ethics certificate.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _context.UsersConference.FirstOrDefault(u => u.UserId == userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var researchEvents = _context.Registration
+                .Where(r => r.UserId == userId && r.ResearchEvent.RequiresEthicsCertificate)
+                .Select(r => new EventDropdown
+                {
+                    ResearchEventId = r.ResearchEvent.ResearchEventId,
+                    DisplayText = $"{r.ResearchEvent.ResearchEventId} : {r.ResearchEvent.EventName}"
+                })
+                .ToList();
+
+            var ethicsCertificates = _context.EthicsCertificate
+                .Where(ec => ec.UserId == userId)
+                .Select(ec => new EthicsCertificateStatus
+                {
+                    EthicsID = ec.EthicsID,
+                    Author = ec.Author,
+                    Authors = ec.Authors,
+                    EventName = ec.ResearchEvent.EventName,
+                    Status = ec.Status
+                })
+                .ToList();
+
+            var viewModel = new SubmitEthicsCertificateViewModel
+            {
+                ResearchEvents = researchEvents,
+                Author = $"{user.FirstName} {user.LastName}",
+                StatusList = ethicsCertificates
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitEthicsCertificate(SubmitEthicsCertificateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid form submission.";
+                return View(model);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["ErrorMessage"] = "You must be logged in.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _context.UsersConference.FirstOrDefault(u => u.UserId == userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var researchEvent = _context.ResearchEvent.FirstOrDefault(re => re.ResearchEventId == model.ResearchEventId);
+            if (researchEvent == null)
+            {
+                TempData["ErrorMessage"] = "Research event not found.";
+                return View(model);
+            }
+
+            var registration = _context.Registration.FirstOrDefault(r =>
+                r.UserId == userId && r.ResearchEventId == model.ResearchEventId);
+            if (registration == null)
+            {
+                TempData["ErrorMessage"] = "You are not registered for this event.";
+                return View(model);
+            }
+
+            byte[] fileData;
+            using (var memoryStream = new MemoryStream())
+            {
+                await model.EthicsCertificate.CopyToAsync(memoryStream);
+                fileData = memoryStream.ToArray();
+            }
+
+            var ethicsCertificate = new EthicsCertificate
+            {
+                UserId = userId,
+                ResearchEventId = model.ResearchEventId,
+                ResearchTitle = model.ResearchTitle,
+                Author = model.Author,
+                Authors = model.Authors != null && model.Authors.Any() ? string.Join(", ", model.Authors) : null,
+                EthicsCertficate = fileData
+            };
+
+            _context.EthicsCertificate.Add(ethicsCertificate);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Ethics Certificate submitted successfully!";
+            return RedirectToAction("SubmitEthicsCertificate");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewEthicsCertificate(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                TempData["ErrorMessage"] = "Ethics Certificate ID is required.";
+                return RedirectToAction("SubmitEthicsCertificate");
+            }
+
+            var ethicsCertificate = await _context.EthicsCertificate
+                .FirstOrDefaultAsync(ec => ec.EthicsID == id);
+
+            if (ethicsCertificate == null)
+            {
+                TempData["ErrorMessage"] = "Ethics Certificate not found.";
+                return RedirectToAction("SubmitEthicsCertificate");
+            }
+
+            return File(ethicsCertificate.EthicsCertficate, "application/pdf");
+        }
+
+        [HttpGet]
+        public IActionResult ViewEthicsCertificatePage()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            var ethicsCertificates = _context.EthicsCertificate
+                .Where(e => e.UserId == userId)
+                .Select(e => new ViewEthicsCertificateViewModel
+                {
+                    EthicsID = e.EthicsID,
+                    Author = e.Author,
+                    Authors = e.Authors,
+                    EventName = e.ResearchEvent.EventName,
+                    ResearchTitle = e.ResearchTitle,
+                    Status = e.Status,
+                    Comment = e.Comment
+                })
+                .ToList();
+
+            var viewModel = new ViewEthicsCertificateViewModel
+            {
+                StatusList = ethicsCertificates
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResubmitEthicsCertificate(string EthicsID, string ResearchTitle, string Authors, IFormFile EthicsCertificate)
+        {
+            var ethicsCertificate = _context.EthicsCertificate.FirstOrDefault(ec => ec.EthicsID == EthicsID);
+
+            if (ethicsCertificate == null)
+            {
+                TempData["ErrorMessage"] = "Ethics Certificate not found.";
+                return RedirectToAction("ViewEthicsCertificatePage");
+            }
+
+            ethicsCertificate.ResearchTitle = ResearchTitle;
+            ethicsCertificate.Authors = Authors;
+            ethicsCertificate.UpdatedOn = DateTime.Now;
+
+            if (EthicsCertificate != null && EthicsCertificate.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await EthicsCertificate.CopyToAsync(memoryStream);
+                    ethicsCertificate.EthicsCertficate = memoryStream.ToArray();
+                }
+            }
+
+            ethicsCertificate.Status = "Pending";
+            ethicsCertificate.Comment = null;
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Ethics Certificate resubmitted successfully!";
+            return RedirectToAction("ViewEthicsCertificatePage");
         }
 
     }

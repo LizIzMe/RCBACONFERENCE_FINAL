@@ -242,6 +242,7 @@ namespace RCBACONFERENCE.Controllers
                 researchEvent.EventName = model.EventName;
                 researchEvent.EventDescription = model.EventDescription;
                 researchEvent.EventLocation = model.EventLocation;
+                researchEvent.RequiresEthicsCertificate = model.RequiresEthicsCertificate;
 
                 if (EventThumbnail != null && EventThumbnail.Length > 0)
                 {
@@ -626,6 +627,93 @@ namespace RCBACONFERENCE.Controllers
             }
 
             return BadRequest("Invalid report type.");
+        }
+
+        [HttpGet]
+        public IActionResult CheckEthics(string researchEventId = null)
+        {
+            var researchEvents = _context.ResearchEvent
+                .Select(re => new EventDropdown
+                {
+                    ResearchEventId = re.ResearchEventId,
+                    DisplayText = $"{re.ResearchEventId} : {re.EventName}"
+                })
+                .ToList();
+
+            var ethicsCertificatesQuery = _context.EthicsCertificate.AsQueryable();
+
+            if (!string.IsNullOrEmpty(researchEventId))
+            {
+                ethicsCertificatesQuery = ethicsCertificatesQuery.Where(ec => ec.ResearchEventId == researchEventId);
+            }
+
+            var ethicsCertificates = ethicsCertificatesQuery
+                .Select(ec => new EthicsCertificateDetails
+                {
+                    EthicsID = ec.EthicsID,
+                    ResearchTitle = ec.ResearchTitle,
+                    Author = ec.Author,
+                    CoAuthors = ec.Authors,
+                    EventName = ec.ResearchEvent.EventName,
+                    Status = ec.Status,
+                    Comment = ec.Comment
+                })
+                .ToList();
+
+            var viewModel = new CheckEthicsViewModel
+            {
+                SelectedResearchEventId = researchEventId,
+                ResearchEvents = researchEvents,
+                EthicsCertificates = ethicsCertificates
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateEthicsStatus(string EthicsID, string Status, string? Comment)
+        {
+            var ethicsCertificate = _context.EthicsCertificate.FirstOrDefault(ec => ec.EthicsID == EthicsID);
+            if (ethicsCertificate == null)
+            {
+                TempData["ErrorMessage"] = "Ethics Certificate not found.";
+                return RedirectToAction("CheckEthics");
+            }
+
+            if (ethicsCertificate.Status == "Approved" && Status != "Approved")
+            {
+                TempData["ErrorMessage"] = "An approved certificate cannot be changed to another status.";
+                return RedirectToAction("CheckEthics");
+            }
+
+            if (Status == "Rejected" && string.IsNullOrWhiteSpace(Comment))
+            {
+                TempData["ErrorMessage"] = "A comment is required when rejecting a certificate.";
+                return RedirectToAction("CheckEthics");
+            }
+
+            ethicsCertificate.Status = Status;
+            ethicsCertificate.Comment = (Status == "Rejected") ? Comment : null;
+
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Ethics Certificate status updated successfully!";
+            return RedirectToAction("CheckEthics");
+        }
+
+
+        [HttpGet]
+        public IActionResult ViewEthicsCertificate(string id)
+        {
+            var ethicsCertificate = _context.EthicsCertificate.FirstOrDefault(ec => ec.EthicsID == id);
+            if (ethicsCertificate == null)
+            {
+                return NotFound();
+            }
+
+            var fileContent = ethicsCertificate.EthicsCertficate;
+            return File(fileContent, "application/pdf"); 
         }
 
     }

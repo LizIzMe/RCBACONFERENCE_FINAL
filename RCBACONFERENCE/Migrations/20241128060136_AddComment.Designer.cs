@@ -12,8 +12,8 @@ using RCBACONFERENCE.Data;
 namespace RCBACONFERENCE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241120104832_NewTable")]
-    partial class NewTable
+    [Migration("20241128060136_AddComment")]
+    partial class AddComment
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,14 +39,70 @@ namespace RCBACONFERENCE.Migrations
                     b.ToTable("CONF_ConferenceRoles");
                 });
 
+            modelBuilder.Entity("RCBACONFERENCE.Models.EthicsCertificate", b =>
+                {
+                    b.Property<string>("EthicsID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Authors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("EthicsCertficate")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ResearchEventId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ResearchTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("EthicsID");
+
+                    b.HasIndex("ResearchEventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CONF_EthicsCertificate");
+                });
+
             modelBuilder.Entity("RCBACONFERENCE.Models.Evaluation", b =>
                 {
                     b.Property<string>("EvaluationId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("ClarityPresentation")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DepthResearch")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EvaluatedAt")
                         .HasColumnType("datetime2");
@@ -55,7 +111,19 @@ namespace RCBACONFERENCE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Rating")
+                    b.Property<int>("OriginalityApproach")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RelevanceTheme")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScientificNovelty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SignificanceContribution")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TechnicalQuality")
                         .HasColumnType("int");
 
                     b.Property<string>("UploadPaperID")
@@ -117,6 +185,75 @@ namespace RCBACONFERENCE.Migrations
                     b.ToTable("CONF_PaperAssignmentTable");
                 });
 
+            modelBuilder.Entity("RCBACONFERENCE.Models.Receipt", b =>
+                {
+                    b.Property<string>("ReceiptId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ReceiptFile")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ReferenceNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResearchEventId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UploadedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ReceiptId");
+
+                    b.HasIndex("ResearchEventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CONF_Receipt");
+                });
+
+            modelBuilder.Entity("RCBACONFERENCE.Models.Registration", b =>
+                {
+                    b.Property<string>("RegistrationId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResearchEventId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RegistrationId");
+
+                    b.HasIndex("ResearchEventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CONF_Registration");
+                });
+
             modelBuilder.Entity("RCBACONFERENCE.Models.ResearchEvent", b =>
                 {
                     b.Property<string>("ResearchEventId")
@@ -142,6 +279,9 @@ namespace RCBACONFERENCE.Migrations
 
                     b.Property<DateTime>("RegistrationOpen")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("RequiresEthicsCertificate")
+                        .HasColumnType("bit");
 
                     b.HasKey("ResearchEventId");
 
@@ -207,6 +347,10 @@ namespace RCBACONFERENCE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ResearchEventId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -226,6 +370,8 @@ namespace RCBACONFERENCE.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UploadPaperID");
+
+                    b.HasIndex("ResearchEventId");
 
                     b.HasIndex("UserId");
 
@@ -311,6 +457,25 @@ namespace RCBACONFERENCE.Migrations
                     b.ToTable("CONF_UserConference");
                 });
 
+            modelBuilder.Entity("RCBACONFERENCE.Models.EthicsCertificate", b =>
+                {
+                    b.HasOne("RCBACONFERENCE.Models.ResearchEvent", "ResearchEvent")
+                        .WithMany()
+                        .HasForeignKey("ResearchEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RCBACONFERENCE.Models.UsersConference", "UsersConference")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ResearchEvent");
+
+                    b.Navigation("UsersConference");
+                });
+
             modelBuilder.Entity("RCBACONFERENCE.Models.Evaluation", b =>
                 {
                     b.HasOne("RCBACONFERENCE.Models.EvaluatorInfo", "EvaluatorInfo")
@@ -360,6 +525,44 @@ namespace RCBACONFERENCE.Migrations
                     b.Navigation("UploadPaperInfo");
                 });
 
+            modelBuilder.Entity("RCBACONFERENCE.Models.Receipt", b =>
+                {
+                    b.HasOne("RCBACONFERENCE.Models.ResearchEvent", "ResearchEvent")
+                        .WithMany()
+                        .HasForeignKey("ResearchEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RCBACONFERENCE.Models.UsersConference", "UsersConference")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ResearchEvent");
+
+                    b.Navigation("UsersConference");
+                });
+
+            modelBuilder.Entity("RCBACONFERENCE.Models.Registration", b =>
+                {
+                    b.HasOne("RCBACONFERENCE.Models.ResearchEvent", "ResearchEvent")
+                        .WithMany()
+                        .HasForeignKey("ResearchEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RCBACONFERENCE.Models.UsersConference", "UsersConference")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ResearchEvent");
+
+                    b.Navigation("UsersConference");
+                });
+
             modelBuilder.Entity("RCBACONFERENCE.Models.ScheduleEvent", b =>
                 {
                     b.HasOne("RCBACONFERENCE.Models.ResearchEvent", "ResearchEvent")
@@ -373,6 +576,12 @@ namespace RCBACONFERENCE.Migrations
 
             modelBuilder.Entity("RCBACONFERENCE.Models.UploadPaperInfo", b =>
                 {
+                    b.HasOne("RCBACONFERENCE.Models.ResearchEvent", "ResearchEvent")
+                        .WithMany()
+                        .HasForeignKey("ResearchEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RCBACONFERENCE.Models.UsersConference", "UsersConference")
                         .WithMany("UploadPapers")
                         .HasForeignKey("UserId")
@@ -384,6 +593,8 @@ namespace RCBACONFERENCE.Migrations
                         .HasForeignKey("UserRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ResearchEvent");
 
                     b.Navigation("UserConferenceRoles");
 

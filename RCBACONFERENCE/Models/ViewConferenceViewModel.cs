@@ -13,6 +13,7 @@
         public DateTime EndTime { get; set; }
         public List<ScheduleEventViewModel> Schedules { get; set; } = new List<ScheduleEventViewModel>();
         public bool HasUploadedReceipt { get; set; }
+        public bool RequiresEthicsCertificate { get; set; }
         public string? Status { get; set; } 
         public string? Comment { get; set; }
     }

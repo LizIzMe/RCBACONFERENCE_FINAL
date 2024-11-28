@@ -45,12 +45,18 @@ namespace RCBACONFERENCE.Models
 
         public string FileType { get; set; }
 
+        [ForeignKey("EthicsCertificate")]
+        public string? EthicsID { get; set; } 
+
+        public DateTime CreatedAt { get; set; }
+
         [Required]
         [MaxLength(20)]
         public string Status { get; set; } = "Pending"; // Default status is "Pending"
         public UserConferenceRoles UserConferenceRoles { get; set; }
         public UsersConference UsersConference{ get; set; }
         public ResearchEvent ResearchEvent { get; set; }
+        public EthicsCertificate EthicsCertificate { get; set; } 
         public ICollection<PaperAssignments> PaperAssignments { get; set; }
     }
 }

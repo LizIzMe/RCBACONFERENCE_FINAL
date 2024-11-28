@@ -12,8 +12,8 @@ using RCBACONFERENCE.Data;
 namespace RCBACONFERENCE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241122012222_RemoveRegistrationIDFromEvaluatorTable")]
-    partial class RemoveRegistrationIDFromEvaluatorTable
+    [Migration("20241127060157_NewTable")]
+    partial class NewTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

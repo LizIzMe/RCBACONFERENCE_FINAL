@@ -12,8 +12,8 @@ using RCBACONFERENCE.Data;
 namespace RCBACONFERENCE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241122010720_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20241128050512_ResearchTitleADD")]
+    partial class ResearchTitleADD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,53 @@ namespace RCBACONFERENCE.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("CONF_ConferenceRoles");
+                });
+
+            modelBuilder.Entity("RCBACONFERENCE.Models.EthicsCertificate", b =>
+                {
+                    b.Property<string>("EthicsID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Authors")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("EthicsCertficate")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ResearchEventId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ResearchTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("EthicsID");
+
+                    b.HasIndex("ResearchEventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CONF_EthicsCertificate");
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.Evaluation", b =>
@@ -230,6 +277,9 @@ namespace RCBACONFERENCE.Migrations
                     b.Property<DateTime>("RegistrationOpen")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("RequiresEthicsCertificate")
+                        .HasColumnType("bit");
+
                     b.HasKey("ResearchEventId");
 
                     b.ToTable("CONF_ResearchEvent");
@@ -402,6 +452,25 @@ namespace RCBACONFERENCE.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("CONF_UserConference");
+                });
+
+            modelBuilder.Entity("RCBACONFERENCE.Models.EthicsCertificate", b =>
+                {
+                    b.HasOne("RCBACONFERENCE.Models.ResearchEvent", "ResearchEvent")
+                        .WithMany()
+                        .HasForeignKey("ResearchEventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RCBACONFERENCE.Models.UsersConference", "UsersConference")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ResearchEvent");
+
+                    b.Navigation("UsersConference");
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.Evaluation", b =>

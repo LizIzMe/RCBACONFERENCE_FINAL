@@ -69,7 +69,6 @@ namespace RCBACONFERENCE.Controllers
             }
         }
 
-
         // Display evaluation form for a specific paper
         [HttpGet]
         public async Task<IActionResult> EvaluatePaper(string id)
@@ -201,19 +200,19 @@ namespace RCBACONFERENCE.Controllers
                 // Notify researcher via email
                 var emailSubject = "Paper Evaluation Notification";
                 var emailBody = $@"
-            Dear {paper.UsersConference.FirstName} {paper.UsersConference.LastName},
+                    Dear {paper.UsersConference.FirstName} {paper.UsersConference.LastName},
 
-            Your paper titled '{paper.Title}' has been evaluated. Below is the summary:
+                    Your paper titled '{paper.Title}' has been evaluated. Below is the summary:
 
-            Average Score: {averageScore:F2}
-            Status: {paperStatus}
+                    Average Score: {averageScore:F2}
+                    Status: {paperStatus}
 
-            Comments: {Comments}
+                    Comments: {Comments}
 
-            Thank you for your submission.
+                    Thank you for your submission.
 
-            Best regards,
-            RCBACONFERENCE Team";
+                    Best regards,
+                    RCBACONFERENCE Team";
 
                 await SendEmailAsync(paper.UsersConference.Email, emailSubject, emailBody);
 

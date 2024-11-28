@@ -21,6 +21,7 @@ namespace RCBACONFERENCE.Data
         public DbSet<Evaluation> Evaluation { get; set; } //Evaluation Table
         public DbSet<Receipt> Receipt { get; set; } //Receipt Table
         public DbSet<Registration> Registration { get; set; } //Registration Table
+        public DbSet<EthicsCertificate> EthicsCertificate { get; set; } //EthicsCertificate Table
 
     }
 }
