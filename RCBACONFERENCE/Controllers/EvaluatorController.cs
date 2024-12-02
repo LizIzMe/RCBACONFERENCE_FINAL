@@ -256,5 +256,34 @@ namespace RCBACONFERENCE.Controllers
 
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetResearchPaper(string id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest("Invalid paper ID.");
+                }
+
+                var paper = await _context.UploadPapers
+                    .FirstOrDefaultAsync(p => p.UploadPaperID == id);
+
+                if (paper == null || paper.FileData == null)
+                {
+                    return NotFound("Research paper not found.");
+                }
+
+                // Render the PDF in the browser
+                return File(paper.FileData, "application/pdf");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving research paper.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
     }
 }
