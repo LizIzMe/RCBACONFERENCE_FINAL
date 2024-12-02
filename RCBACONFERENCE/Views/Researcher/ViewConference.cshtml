@@ -78,6 +78,7 @@
                                 <h5 class="mt-3">Event Schedule:</h5>
                                 <ul class="list-group">
                                     @foreach (var schedule in conference.Schedules)
+
                                     {
                                         <li class="list-group-item">
                                             <strong>Day:</strong> @schedule.EventDate.ToString("MMMM dd, yyyy")
@@ -89,46 +90,88 @@
                             </div>
                             <div class="modal-footer flex-column">
                                 @if (conference.HasUploadedReceipt)
+
                                 {
                                     @if (conference.Status == "Approved")
+
                                     {
                                         <p class="text-success text-center fw-bold mb-3">
                                             You've successfully registered for this event.
                                         </p>
                                     }
+
                                     else if (conference.Status == "Rejected")
+
                                     {
                                         <p class="text-danger text-center fw-bold mb-3">
                                             Your receipt has been rejected.
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#rejectedModal-@conference.ResearchEventId">Click for more info</a>
                                         </p>
                                     }
+
                                     else
+
                                     {
                                         <p class="text-warning text-center fw-bold mb-3">
                                             You've already uploaded your receipt. Please wait for confirmation.
                                         </p>
                                     }
                                 }
+
                                 else if (DateTime.Now < conference.RegistrationOpen)
+
                                 {
                                     <p class="text-warning text-center fw-bold mb-3">
                                         Registration is not yet open.
                                     </p>
                                 }
+
                                 else if (DateTime.Now > conference.RegistrationDeadline)
+
                                 {
                                     <p class="text-danger text-center fw-bold mb-3">
                                         Registration is closed.
                                     </p>
                                 }
+
                                 else
+
                                 {
                                     <button class="btn btn-primary mb-3" onclick="window.location.href='@Url.Action("UploadReceipt", "Researcher", new { eventId = conference.ResearchEventId })'">
                                         Register
                                     </button>
                                 }
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejected Receipt Modal -->
+                <div class="modal fade" id="rejectedModal-@conference.ResearchEventId" tabindex="-1" aria-labelledby="rejectedModalLabel-@conference.ResearchEventId" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="rejectedModalLabel-@conference.ResearchEventId">Receipt Rejected</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-danger"><strong>Reason for Rejection:</strong></p>
+                                <p>@conference.Comment</p>
+                                <hr />
+                                <form asp-action="UploadNewReceipt" asp-controller="Researcher" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="ResearchEventId" value="@conference.ResearchEventId" />
+                                    <div class="mb-3">
+                                        <label for="referenceNumber" class="form-label">Reference Number</label>
+                                        <input type="text" class="form-control" id="referenceNumber" name="ReferenceNumber" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="receiptFile" class="form-label">Upload New Receipt</label>
+                                        <input type="file" class="form-control" id="receiptFile" name="ReceiptFile" accept="image/*" required />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit New Receipt</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -137,4 +180,3 @@
         </div>
     </div>
 </div>
-

@@ -33,7 +33,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("CONF_ConferenceRoles");
+                    b.ToTable("CONF_ConferenceRoles", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.EthicsCertificate", b =>
@@ -83,7 +83,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CONF_EthicsCertificate");
+                    b.ToTable("CONF_EthicsCertificate", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.Evaluation", b =>
@@ -133,7 +133,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UploadPaperID");
 
-                    b.ToTable("CONF_EvaluationTable");
+                    b.ToTable("CONF_EvaluationTable", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.EvaluatorInfo", b =>
@@ -154,7 +154,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UserRoleId");
 
-                    b.ToTable("CONF_EvaluatorTable");
+                    b.ToTable("CONF_EvaluatorTable", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.PaperAssignments", b =>
@@ -179,7 +179,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UploadPaperID");
 
-                    b.ToTable("CONF_PaperAssignmentTable");
+                    b.ToTable("CONF_PaperAssignmentTable", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.Receipt", b =>
@@ -223,7 +223,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CONF_Receipt");
+                    b.ToTable("CONF_Receipt", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.Registration", b =>
@@ -248,7 +248,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CONF_Registration");
+                    b.ToTable("CONF_Registration", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.ResearchEvent", b =>
@@ -282,7 +282,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasKey("ResearchEventId");
 
-                    b.ToTable("CONF_ResearchEvent");
+                    b.ToTable("CONF_ResearchEvent", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.ScheduleEvent", b =>
@@ -304,7 +304,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("ResearchEventId");
 
-                    b.ToTable("CONF_ScheduleEvent");
+                    b.ToTable("CONF_ScheduleEvent", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.UploadPaperInfo", b =>
@@ -382,7 +382,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UserRoleId");
 
-                    b.ToTable("CONF_UploadPapers");
+                    b.ToTable("CONF_UploadPapers", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.UserConferenceRoles", b =>
@@ -404,7 +404,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CONF_UserConferenceRoles");
+                    b.ToTable("CONF_UserConferenceRoles", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.UsersConference", b =>
@@ -459,7 +459,7 @@ namespace RCBACONFERENCE.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("CONF_UserConference");
+                    b.ToTable("CONF_UserConference", (string)null);
                 });
 
             modelBuilder.Entity("RCBACONFERENCE.Models.EthicsCertificate", b =>

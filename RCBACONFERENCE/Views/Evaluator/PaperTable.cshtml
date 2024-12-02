@@ -14,34 +14,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
-@*<div class="container mt-4">
-    <h2>Assigned Papers for Evaluation</h2>
+    
 
-    @if (TempData["DebugInfo"] != null)
-    {
-        <div class="alert alert-info">
-            @TempData["DebugInfo"]
-        </div>
-    }
-
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["ErrorMessage"]
-        </div>
-    }
-
-    @if (TempData["WarningMessage"] != null)
-    {
-        <div class="alert alert-warning">
-            @TempData["WarningMessage"]
-        </div>
-    }*@
 <body style="font-family: 'Montserrat', sans-serif; overflow-y: auto;">
     <div id="billboard" class="position-relative d-flex align-items-center py-1 bg-light-gray"
          style="background-image: url(/images/banner-image-bg.png); background-size: cover; background-repeat: no-repeat; background-position: center;">
         <div class="container mt-5">
             <h2 class="text-center fw-bold text mb-4">Your Uploaded Papers</h2>
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
             <div class="row">
                 @if (Model != null && Model.Any())
                 {

@@ -126,7 +126,7 @@ namespace RCBACONFERENCE.Services
             // Group papers by status
             var generalList = researchPapers;
             var pendingList = researchPapers.Where(p => p.Status == "Pending").ToList();
-            var approvedList = researchPapers.Where(p => p.Status == "Approved").ToList();
+            var approvedList = researchPapers.Where(p => p.Status == "Accepted").ToList();
             var rejectedList = researchPapers.Where(p => p.Status == "Rejected").ToList();
 
             using (var package = new ExcelPackage())
@@ -134,7 +134,7 @@ namespace RCBACONFERENCE.Services
                 // Add sheets for each list
                 AddResearchPapersSheet(package, "General List", generalList, researchEvent);
                 AddResearchPapersSheet(package, "Pending List", pendingList, researchEvent);
-                AddResearchPapersSheet(package, "Approved List", approvedList, researchEvent);
+                AddResearchPapersSheet(package, "Accepted List", approvedList, researchEvent);
                 AddResearchPapersSheet(package, "Rejected List", rejectedList, researchEvent);
 
                 // Return the file as a memory stream

@@ -13,7 +13,7 @@ namespace RCBACONFERENCE.Services
             _context = context;
         }
 
-        public async Task AssignPapersToEvaluators(int maxAssignmentsPerEvaluator = 3)
+        public async Task AssignPapersToEvaluators(int maxAssignmentsPerEvaluator = 10)
         {
             // Assignment logic (from your original code)
             var unassignedPapers = await _context.UploadPapers
