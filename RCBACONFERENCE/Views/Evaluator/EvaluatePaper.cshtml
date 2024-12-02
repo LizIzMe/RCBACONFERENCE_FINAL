@@ -1,6 +1,7 @@
 ﻿@model RCBACONFERENCE.Models.UploadPaperInfo
 
 @{
+
     ViewBag.Title = "Evaluate Paper";
     Layout = "_LayoutEvaluator";
 }
@@ -14,56 +15,120 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
-
-
 <body style="font-family: 'Montserrat', sans-serif; overflow-y: auto;">
-    <div class="container mt-5">
-        <h2 class="text-center fw-bold text mb-4">Evaluate Paper: @Model.Title</h2>
-        <div class="row">
-            <!-- Display PDF on the left -->
-            <div class="col-md-6">
-                <iframe src="@Url.Action("GetResearchPaper", "Evaluator", new { id = Model.UploadPaperID })"
-                        style="width: 100%; height: 700px;"
-                        frameborder="0">
-                </iframe>
+    <div id="billboard" class="position-relative d-flex align-items-center py-1 bg-light-gray"
+         style="background-image: url(/images/banner-image-bg.png); background-size: cover; background-repeat: no-repeat; background-position: center;">
+        <div class="container mt-5">
+            <h2 class="text-center fw-bold text mb-4">Evaluate Paper: @Model.Title</h2>
+            <div class="row">
+
+                <!--Modal-->
+                <div class="col-md-6">
+                <h4 class="text-center">Research Paper</h4>
+                <div class="pdf-viewer">
+                    <iframe src="@Url.Action("GetResearchPaper", "Evaluator", new { id = Model.UploadPaperID })"
+                            style="width: 100%; height: 700px;"
+                            frameborder="0">
+                    </iframe>
+                </div>
             </div>
+  
+        <form asp-action="SubmitEvaluation" method="post">
+            <input type="hidden" name="UploadPaperID" value="@Model.UploadPaperID" />
 
-            <!-- Evaluation Form on the right -->
-            <div class="col-md-6">
-                <form asp-action="SubmitEvaluation" method="post">
-                    <input type="hidden" name="UploadPaperID" value="@Model.UploadPaperID" />
+            <!-- Scientific/Technical Novelty -->
+            <div class="form-group">
+                <label class="text fw-bold">Scientific/Technical Novelty:</label>
+                @for (int i = 1; i <= 5; i++)
 
-                    <!-- Evaluation Criteria -->
-                    @foreach (var criterion in new[] {
-                    "Scientific/Technical Novelty",
-                    "Significance of Contribution",
-                    "Technical Quality/Rigor",
-                    "Depth of Research",
-                    "Clarity of Presentation",
-                    "Relevance to Conference Theme",
-                    "Originality of Approach"
-                    })
-                    {
-                        <div class="form-group">
-                            <label class="text fw-bold">@criterion:</label>
-                            @for (int i = 1; i <= 5; i++)
-                            {
-                                <div>
-                                    <input type="radio" name="@criterion.Replace(" ", "")" value="@i" required /> @i
-                                </div>
-                            }
-                        </div>
-                    }
-
-                    <!-- Comments -->
-                    <div class="form-group">
-                        <label class="text fw-bold" for="Comments">Comments:</label>
-                        <textarea id="Comments" name="Comments" class="form-control" rows="5" placeholder="Enter your evaluation comments here" required></textarea>
+                {
+                    <div>
+                        <input type="radio" name="ScientificNovelty" value="@i" required /> @i
                     </div>
-
-                    <button type="submit" class="btn btn-success mt-3">Submit Evaluation</button>
-                </form>
+                }
             </div>
-        </div>
+
+            <!-- Significance of Contribution -->
+            <div class="form-group">
+                <label class="text fw-bold">Significance of Contribution:</label>
+                @for (int i = 1; i <= 5; i++)
+
+                {
+                    <div>
+                        <input type="radio" name="SignificanceContribution" value="@i" required /> @i
+                    </div>
+                }
+            </div>
+
+            <!-- Technical Quality/Rigor -->
+            <div class="form-group">
+                <label class="text fw-bold">Technical Quality/Rigor:</label>
+                @for (int i = 1; i <= 5; i++)
+
+                {
+                    <div>
+                        <input type="radio" name="TechnicalQuality" value="@i" required /> @i
+                    </div>
+                }
+            </div>
+
+            <!-- Depth of Research -->
+            <div class="form-group">
+                <label class="text fw-bold">Depth of Research:</label>
+                @for (int i = 1; i <= 5; i++)
+
+                {
+                    <div>
+                        <input type="radio" name="DepthResearch" value="@i" required /> @i
+                    </div>
+                }
+            </div>
+
+            <!-- Clarity of Presentation -->
+            <div class="form-group">
+                <label class="text fw-bold">Clarity of Presentation:</label>
+                @for (int i = 1; i <= 5; i++)
+
+                {
+                    <div>
+                        <input type="radio" name="ClarityPresentation" value="@i" required /> @i
+                    </div>
+                }
+            </div>
+
+            <!-- Relevance to Conference Theme -->
+            <div class="form-group">
+                <label class="text fw-bold">Relevance to Conference Theme:</label>
+                @for (int i = 1; i <= 5; i++)
+
+                {
+                    <div>
+                        <input type="radio" name="RelevanceTheme" value="@i" required /> @i
+                    </div>
+                }
+            </div>
+
+            <!-- Originality of Approach -->
+            <div class="form-group">
+                <label class="text fw-bold">Originality of Approach:</label>
+                @for (int i = 1; i <= 5; i++)
+
+                {
+                    <div>
+                        <input type="radio" name="OriginalityApproach" value="@i" required /> @i
+                    </div>
+                }
+            </div>
+
+            <!-- Comments -->
+            <div class="form-group">
+                <label class="text fw-bold"for="Comments">Comments:</label>
+                <textarea id="Comments" name="Comments" class="form-control" rows="5" placeholder="Enter your evaluation comments here" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit Evaluation</button>
+        </form>
     </div>
+</div>
+</div>
 </body>
