@@ -6,7 +6,7 @@
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold text-primary">Check Ethics Certificates</h1>
+        <h1 class="fw-bold" style="color:#850000">Check Ethics Certificates</h1>
         <form method="get" asp-action="CheckEthics" id="filterForm" class="d-flex">
             <select id="researchEventId" name="researchEventId" class="form-select me-2" onchange="document.getElementById('filterForm').submit();">
                 <option value="">View All</option>
@@ -33,17 +33,17 @@
         </div>
     }
 
-    <div class="table-responsive shadow-sm rounded">
+    <div class="table-responsive" style="width:1300px; max-width:1300px; border-radius:12px; border: 1px solid #ddd; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);max-height:500px;overflow-y:auto">
         <table class="table table-hover align-middle">
-            <thead class="table-dark">
+            <thead class="table">
                 <tr>
-                    <th>Ethics ID</th>
-                    <th>Research Title</th>
-                    <th>Authors</th>
-                    <th>Event Name</th>
-                    <th>Status</th>
-                    <th>Comment</th>
-                    <th class="text-center">Actions</th>
+                    <th class="fw-bold">Ethics ID</th>
+                    <th class="fw-bold">Research Title</th>
+                    <th class="fw-bold">Authors</th>
+                    <th class="fw-bold">Event Name</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold">Comment</th>
+                    <th class="text-center fw-bold">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -90,7 +90,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="7" class="text-center text-muted">No ethics certificates found.</td>
+                        <td colspan="7" class="text-center text-black">No ethics certificates found.</td>
                     </tr>
                 }
             </tbody>

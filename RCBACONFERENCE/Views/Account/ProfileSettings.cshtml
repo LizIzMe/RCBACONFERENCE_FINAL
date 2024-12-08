@@ -10,8 +10,8 @@
     Layout = "_LayoutAccount";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center text-primary">Profile Settings</h2>
+<div class="container mt-2">
+    <h2 class="text-center" style="color:#850000">Profile Settings</h2>
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -78,9 +78,9 @@
             <label>Current Password</label>
             <input type="password" class="form-control" value="********" readonly />
         </div>
-
-        <div class="text-center mt-4">
-            <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+        <div class="d-flex justify-content-center align-items-center" style="gap:15px">
+            <div class="text-center mt-4">
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal" style="width:200px">
                 Change Password
             </button>
         </div>
@@ -94,6 +94,7 @@
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary btn-lg">Update Profile</button>
         </div>
+       </div>
     </form>
 </div>
 

@@ -4,12 +4,15 @@
     ViewData["Title"] = "Manage Conference Events";
     Layout = "_LayoutChief";
 }
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" asp-append-version="true">
+</head>
 
-<div class="container mt-5">
+<div class="container mt-lg-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Manage Conference Events</h2>
         <div>
-            <button class="btn btn-secondary me-2" onclick="window.location.href='@Url.Action("UpdateEvents", "Chief")'">
+            <button class="btn btn-secondary me-2 fw-bold" onclick="window.location.href='@Url.Action("UpdateEvents", "Chief")'">
                 <i class="bi bi-pencil-square"></i> Show Events
             </button>
         </div>
@@ -27,47 +30,47 @@
         <div class="alert alert-success">@TempData["Success"]</div>
     }
 
-    <form asp-action="CreateEvent" method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light">
+    <form asp-action="CreateEvent" method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light mb-lg-5" style="box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); border-radius:12px;">
         <div class="form-group">
-            <label asp-for="EventName" class="form-label">Event Name</label>
+            <label asp-for="EventName" class="form-label fw-bold">Event Name</label>
             <input asp-for="EventName" class="form-control" required />
             <span asp-validation-for="EventName" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="EventDescription" class="form-label">Event Description</label>
+            <label asp-for="EventDescription" class="form-label fw-bold">Event Description</label>
             <textarea asp-for="EventDescription" class="form-control" rows="3" required></textarea>
             <span asp-validation-for="EventDescription" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="EventLocation" class="form-label">Event Location</label>
+            <label asp-for="EventLocation" class="form-label fw-bold">Event Location</label>
             <input asp-for="EventLocation" class="form-control" required />
             <span asp-validation-for="EventLocation" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="EventThumbnail" class="form-label">Event Thumbnail (Optional)</label>
+            <label asp-for="EventThumbnail" class="form-label fw-bold">Event Thumbnail (Optional)</label>
             <input asp-for="EventThumbnail" type="file" class="form-control" accept="image/*"/>
             <span asp-validation-for="EventThumbnail" class="text-danger"></span>
         </div>
 
 
         <div class="form-group">
-            <label asp-for="RegistrationOpen" class="form-label">Registration Open</label>
+            <label asp-for="RegistrationOpen" class="form-label fw-bold">Registration Open</label>
             <input asp-for="RegistrationOpen" type="datetime-local" class="form-control" required />
             <span asp-validation-for="RegistrationOpen" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="RegistrationDeadline" class="form-label">Registration Deadline</label>
+            <label asp-for="RegistrationDeadline" class="form-label fw-bold">Registration Deadline</label>
             <input asp-for="RegistrationDeadline" type="datetime-local" class="form-control" required />
             <span asp-validation-for="RegistrationDeadline" class="text-danger"></span>
         </div>
 
         <div class="form-check mt-3">
             <input asp-for="RequiresEthicsCertificate" type="checkbox" class="form-check-input" id="requiresEthicsCertificate" />
-            <label asp-for="RequiresEthicsCertificate" class="form-check-label">
+            <label asp-for="RequiresEthicsCertificate" class="form-check-label fw-bold">
                 Requires Ethics Certificate (for PUP Affiliation)
             </label>
         </div>
@@ -77,23 +80,23 @@
         <div id="scheduleContainer">
             <div class="schedule-event">
                 <div class="form-group">
-                    <label>Event Date</label>
+                    <label class="fw-bold">Event Date</label>
                     <input type="datetime-local" class="form-control" name="Schedules[0].EventDate" required />
                     <span asp-validation-for="Schedules[0].EventDate" class="text-danger"></span> 
                 </div>
                 <div class="form-group">
-                    <label>End Time</label>
+                    <label class="fw-bold">End Time</label>
                     <input type="datetime-local" class="form-control" name="Schedules[0].EndTime" required />
                     <span asp-validation-for="Schedules[0].EndTime" class="text-danger"></span>
                 </div>
-                <button type="button" class="btn btn-danger delete-schedule">Delete</button>
+                <button type="button" class="btn btn-danger delete-schedule fw-bold">Delete</button>
             </div>
         </div>
 
-        <button type="button" id="addSchedule" class="btn btn-secondary mt-3">Add Day</button>
+        <button type="button" id="addSchedule" class="btn btn-secondary mt-3 fw-bold">Add Day</button>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary btn-lg">Create Event</button>
+            <button type="submit" class="btn btn-primary btn-lg fw-bold">Create Event</button>
         </div>
     </form>
 </div>

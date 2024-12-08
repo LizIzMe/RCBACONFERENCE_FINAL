@@ -5,7 +5,7 @@
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold text-primary">Check Receipts</h1>
+        <h1 class="fw-bold" style="color:#850000">Check Receipts</h1>
         <form method="get" asp-action="CheckReceipts" id="filterForm" class="d-flex">
             <select id="researchEventId" name="researchEventId" class="form-select me-2" onchange="document.getElementById('filterForm').submit();">
                 <option value="">View All</option>
@@ -32,18 +32,18 @@
         </div>
     }
 
-    <div class="table-responsive shadow-sm rounded">
+    <div class="table-responsive bg-light" style="width:1300px; max-width:1300px; border-radius:12px; border: 1px solid #ddd; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);max-height:500px;overflow-y:auto">
         <table class="table table-hover align-middle">
-            <thead class="table-dark">
+            <thead class="table-header">
                 <tr>
-                    <th>User ID</th>
-                    <th>Research Event</th>
-                    <th>Name</th>
-                    <th>Classification</th>
-                    <th>Reference</th>
-                    <th>Status</th>
-                    <th>Comment</th>
-                    <th class="text-center">Actions</th>
+                    <th class="fw-bold">User ID</th>
+                    <th class="fw-bold">Research Event</th>
+                    <th class="fw-bold">Name</th>
+                    <th class="fw-bold">Classification</th>
+                    <th class="fw-bold">Reference</th>
+                    <th class="fw-bold">Status</th>
+                    <th class="fw-bold"> Comment</th>
+                    <th class="text-center fw-bold">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,7 +86,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="8" class="text-center text-muted">No receipts found.</td>
+                        <td colspan="8" class="text-center text-black">No receipts found.</td>
                     </tr>
                 }
             </tbody>
