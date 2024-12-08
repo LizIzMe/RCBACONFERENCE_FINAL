@@ -13,10 +13,9 @@
 </head>
 
 <body style="font-family: 'Montserrat', sans-serif; overflow-y: auto;">
-    <div id="billboard" class="py-5 bg-light-gray"
-         style="background-image: url(/images/banner-image-bg.png); background-size: cover; background-repeat: no-repeat; background-position: center;">
+    <div id="billboard" class="py-5">
         <div class="container text-center my-5">
-            <h2 class="fw-bold mb-4" style="color: #850000;">Invitation</h2>
+            <h2 class="fw-bold mb-5" style="color: #850000; margin-top:-50px">Invitation</h2>
 
             @if (!Model.Any())
             {
@@ -26,7 +25,7 @@
             }
             else
             {
-                <div class="shadow p-4 rounded bg-white" style="max-width: 600px; margin: auto;">
+                <div class="bg-light-gray" style="width: 1000px; padding: 20px; max-height: 490px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);border-radius:12px; margin:auto">
                     @foreach (var invitation in Model)
                     {
                         <p class="mb-4">
@@ -45,7 +44,14 @@
                         }
                         else
                         {
-                            <p>Status: <span class="badge bg-secondary">@invitation.Status</span></p>
+                            @if (@invitation.Status == "Accepted")
+                            {
+                                <p>Status: <span class="badge bg-success">Accepted</span></p>
+                            }
+                            else
+                            {
+                                <p>Status: <span class="badge bg-danger">Rejected</span></p>
+                            }
                         }
                     }
                 </div>

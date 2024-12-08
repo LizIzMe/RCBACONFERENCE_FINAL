@@ -16,8 +16,7 @@
 </head>
 
 <body style="font-family: 'Montserrat', sans-serif; overflow-y: auto;">
-    <div id="billboard" class="position-relative d-flex align-items-center py-1 bg-light-gray"
-         style="background-image: url(/images/banner-image-bg.png); background-size: cover; background-repeat: no-repeat; background-position: center;">
+    <div id="billboard" class="position-relative d-flex align-items-center py-1">
         <div class="container">
             <h2 class="text-center fw-bold mb-4" style="padding-top: 20px; color: #850000;">Submit Ethics Certificate</h2>
 
@@ -35,10 +34,10 @@
             </div>
         }
 
-        <form asp-action="SubmitEthicsCertificate" method="post" enctype="multipart/form-data" class="shadow-lg p-4 rounded bg-white">
+        <form asp-action="SubmitEthicsCertificate" method="post" enctype="multipart/form-data" class="shadow-lg p-4 rounded bg-white mb-5">
             <!-- Select Research Event -->
             <div class="mb-3">
-                <label for="ResearchEventId" class="form-label">Select Research Event</label>
+                <label for="ResearchEventId" class="form-label fw-bold">Select Research Event</label>
                 <select asp-for="ResearchEventId" class="form-select" required>
                     <option value="">-- Select an Event --</option>
                     @foreach (var eventItem in Model.ResearchEvents)
@@ -51,20 +50,20 @@
 
             <!-- Research Title -->
             <div class="mb-3">
-                <label for="ResearchTitle" class="form-label">Research Title</label>
+                <label for="ResearchTitle" class="form-label fw-bold">Research Title</label>
                 <input type="text" asp-for="ResearchTitle" class="form-control" placeholder="Enter your research title" required />
                 <span asp-validation-for="ResearchTitle" class="text-danger"></span>
             </div>
 
             <!-- Author -->
             <div class="mb-3">
-                <label for="Author" class="form-label">Author</label>
+                <label for="Author" class="form-label fw-bold">Author</label>
                 <input type="text" asp-for="Author" class="form-control" readonly />
             </div>
 
             <!-- Add Co-Authors -->
             <div class="mb-3">
-                <label for="Authors" class="form-label">Add Co-Authors</label>
+                <label for="Authors" class="form-label fw-bold">Add Co-Authors</label>
                 <div id="authors-container" class="d-flex flex-wrap gap-2">
                     <!-- Dynamically added co-authors will appear here -->
                 </div>
@@ -74,15 +73,17 @@
 
             <!-- Upload Ethics Certificate -->
             <div class="mb-3">
-                <label for="EthicsCertificate" class="form-label">Upload Ethics Certificate (PDF only)</label>
+                <label for="EthicsCertificate" class="form-label fw-bold">Upload Ethics Certificate (PDF only)</label>
                 <input type="file" asp-for="EthicsCertificate" class="form-control" accept=".pdf" required />
                 <span asp-validation-for="EthicsCertificate" class="text-danger"></span>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary w-100 fw-bold">
-                <i class="bi bi-upload"></i> Submit
-            </button>
+            <div class="d-flex justify-content-center align-items-center">
+                <button type="submit" class="btn btn-primary w-30 fw-bold">
+                    <i class="bi bi-upload"></i> Submit
+                </button>
+            </div>
         </form>
     </div>
 </div>

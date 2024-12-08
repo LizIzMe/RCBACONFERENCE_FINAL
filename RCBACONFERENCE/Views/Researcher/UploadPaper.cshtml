@@ -6,10 +6,9 @@
 }
 
 <body style="font-family: 'Montserrat', sans-serif; overflow-y: auto;">
-    <div id="billboard" class="position-relative d-flex align-items-center py-1 bg-light-gray"
-         style="background-image: url(/images/banner-image-bg.png); background-size: cover; background-repeat: no-repeat;">
+    <div id="billboard" class="position-relative d-flex align-items-center py-1">
         <div class="container mt-4">
-            <h1 class="text-center fw-bold text mb-4" style="color:#850000;">Upload Research Paper</h1>
+            <h1 class="text-center fw-bold text mb-5" style="color:#850000;">Upload Research Paper</h1>
 
             @if (TempData["Error"] != null)
             {
@@ -24,10 +23,10 @@
             }
 
 
-    <form asp-action="UploadPaper" method="post" enctype="multipart/form-data" class="shadow-lg p-4 rounded bg-white">
+    <form asp-action="UploadPaper" method="post" enctype="multipart/form-data" class="shadow-lg p-4 rounded bg-white mb-5" style="margin-top:-15px">
             <!-- Research Event -->
             <div class="mb-3">
-                <label for="ResearchEventId" class="form-label">Select Research Event:</label>
+                <label for="ResearchEventId" class="form-label fw-bold">Select Research Event:</label>
                 <select class="form-select" id="ResearchEventId" name="ResearchEventId" required>
                     <option value="">-- Select an Event --</option>
                     @foreach (var eventItem in ViewBag.ResearchEvents)
@@ -39,7 +38,7 @@
 
             <!-- Ethics Certificate Dropdown -->
                 <div class="mb-3 d-none" id="ethics-section">
-                    <label for="EthicsID" class="form-label">Select Approved Ethics Certificate:</label>
+                    <label for="EthicsID" class="form-label fw-bold">Select Approved Ethics Certificate:</label>
                     <select class="form-select" id="EthicsID" name="EthicsID">
                         <option value="">-- Select an Approved Ethics Certificate --</option>
                     </select>
@@ -48,42 +47,42 @@
 
             <!-- Title -->
             <div class="mb-3">
-                <label for="Title" class="form-label">Title:</label>
+                <label for="Title" class="form-label fw-bold">Title:</label>
                 <input type="text" class="form-control" id="Title" name="Title" placeholder="Enter the title of the paper" required />
             </div>
 
             <!-- Authors -->
             <div id="authors-section" class="mb-3">
-                <label for="Author" class="form-label">Author(s):</label>
+                <label for="Author" class="form-label fw-bold">Author(s):</label>
                 <div class="author-wrapper">
                     <input type="text" class="form-control mb-2" name="Authors[]" placeholder="Enter co-author names (excluding yourself)"/>
                 </div>
             </div>
             <div class="d-flex justify-content-between mb-3">
-                <button type="button" class="btn btn-outline-secondary btn-sm" id="add-author-btn">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="add-author-btn" style="width:150px; height:40px">
                     <i class="bi bi-plus-circle"></i> Add Author
                 </button>
-                <button type="button" class="btn btn-outline-danger btn-sm" id="remove-author-btn">
+                <button type="button" class="btn btn-outline-danger btn-sm mt-2" id="remove-author-btn" style="width:250px; height:40px">
                     <i class="bi bi-dash-circle"></i> Remove Last Author
                 </button>
             </div>
 
             <!-- Abstract -->
             <div class="mb-3">
-                <label for="Abstract" class="form-label">Abstract (Max 250 characters):</label>
+                <label for="Abstract" class="form-label fw-bold">Abstract (Max 250 characters):</label>
                 <textarea class="form-control" id="Abstract" name="Abstract" maxlength="250" placeholder="Enter the abstract" required></textarea>
-                <small id="abstract-count" class="form-text text-muted">Characters left: 250</small>
+                <small id="abstract-count" class="form-text" style="color:#850000">Characters left: 250</small>
             </div>
 
             <!-- Affiliation -->
             <div class="mb-3">
-                <label for="Affiliation" class="form-label">Affiliation:</label>
+                <label for="Affiliation" class="form-label fw-bold">Affiliation:</label>
                 <input type="text" class="form-control" id="Affiliation" name="Affiliation" placeholder="Enter affiliation" required />
             </div>
 
             <!-- Keywords -->
             <div class="mb-3">
-                <label for="Keywords" class="form-label">Keywords:</label>
+                <label for="Keywords" class="form-label fw-bold">Keywords:</label>
                 <div id="keywords-container" class="d-flex flex-wrap gap-2">
                     <!-- Tags will be dynamically added here -->
                 </div>
@@ -93,14 +92,15 @@
 
 
             <!-- File Upload -->
-            <div class="mb-3">
+            <div class="mb-3 fw-bold">
                 <label for="File" class="form-label">Upload File (PDF only):</label>
                 <input type="file" class="form-control" id="File" name="File" accept=".pdf" required />
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 fw-bold">
-                <i class="bi bi-upload"></i> Submit
-            </button>
+            <div class="d-flex justify-content-center align-items-center">
+               <button type="submit" class="btn btn-primary w-30 fw-bold"> Submit
+               </button>
+            </div>
         </form>
     </div>
 </div>
